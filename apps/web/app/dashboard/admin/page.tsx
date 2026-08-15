@@ -125,19 +125,10 @@ export default function AdminDashboard() {
             </div>
           ) : (
             <>
-              {/* Stats Grid */}
-              <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
-                {statsConfig.map(s => (
-                  <div key={s.label} className="stat-card" style={{ borderTop: `3px solid ${s.color}` }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div>
-                        <div className="stat-value" style={{ color: s.color }}>{s.value}</div>
-                        
-
               {/* Mobile-Only Navigation Grid */}
               <div className="mobile-only" style={{ marginBottom: '1.5rem' }}>
                 <h3 style={{ marginBottom: '0.875rem', fontSize: '1.1rem', fontWeight: 700, color: '#0F172A' }}>Navigation</h3>
-                <div className="mobile-only grid">
+                <div className="mobile-only grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
                   {[
                     { icon: '🗺️', labelKey: 'Digital Twin', path: '/dashboard/admin/digital-twin', border: '#3B82F6' },
                     { icon: '📈', labelKey: 'Analytics', path: '/dashboard/admin/analytics', border: '#8B5CF6' },
@@ -150,7 +141,15 @@ export default function AdminDashboard() {
                   ))}
                 </div>
               </div>
-<div className="stat-label">{s.label}</div>
+
+              {/* Stats Grid */}
+              <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+                {statsConfig.map(s => (
+                  <div key={s.label} className="stat-card" style={{ borderTop: `3px solid ${s.color}` }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div>
+                        <div className="stat-value" style={{ color: s.color }}>{s.value}</div>
+                        <div className="stat-label">{s.label}</div>
                         <div style={{ fontSize: '0.7rem', color: '#9CA3AF', marginTop: '0.25rem' }}>{s.sub}</div>
                       </div>
                       <span style={{ fontSize: '1.75rem' }}>{s.icon}</span>
