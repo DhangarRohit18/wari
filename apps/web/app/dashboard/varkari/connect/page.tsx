@@ -127,10 +127,40 @@ export default function WariConnectPage() {
           <div style={{ display: 'flex', gap: '0.5rem' }}>
             <button className="btn btn-secondary btn-sm" onClick={() => setShowNeedOffer(true)}>🤝 Need/Offer</button>
             <button className="btn btn-primary btn-sm" onClick={() => setShowCreate(true)}>+ Post</button>
+            <button className="btn btn-sm" style={{ background: '#7C3AED', color: 'white' }} onClick={() => (window as any).showDindi = true}>🚩 Join Dindi</button>
           </div>
         </header>
 
         <div className="dashboard-content">
+          {/* Join Dindi Prototype Modal */}
+          {(window as any).showDindi && (
+            <div className="modal-overlay" onClick={() => { (window as any).showDindi = false; fetchPosts(); /* force re-render */ }}>
+              <div className="modal" onClick={e => e.stopPropagation()}>
+                <h2 style={{ marginBottom: '0.5rem', color: '#7C3AED' }}>🚩 Join a Dindi (Community Sync)</h2>
+                <p style={{ color: '#6B7280', fontSize: '0.875rem', marginBottom: '1.5rem' }}>Find and join verified pilgrim groups walking near your location.</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {[
+                    { name: 'Sant Tukaram Maharaj Dindi', dist: 150, members: 450, verified: true },
+                    { name: 'Pune Varkari Mandal', dist: 300, members: 120, verified: true },
+                    { name: 'Local Palkhi Group 4', dist: 800, members: 45, verified: false }
+                  ].map(d => (
+                    <div key={d.name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', border: '1px solid #E2E8F0', borderRadius: 12, background: '#F8FAFC' }}>
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                          {d.name} {d.verified && <span style={{ color: '#22C55E' }}>✓</span>}
+                        </div>
+                        <div style={{ fontSize: '0.8rem', color: '#6B7280', marginTop: '0.25rem' }}>📍 {d.dist}m away · {d.members} pilgrims</div>
+                      </div>
+                      <button className="btn btn-sm" style={{ background: '#22C55E', color: 'white' }} onClick={(e) => { (e.target as any).innerText = '✓ Requested'; (e.target as any).style.background = '#64748B'; }}>
+                        Request Join
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <button className="btn btn-secondary btn-full" style={{ marginTop: '1.5rem' }} onClick={() => { (window as any).showDindi = false; fetchPosts(); }}>Close</button>
+              </div>
+            </div>
+          )}
           {acceptedMatch && (
             <div style={{ background: '#DCFCE7', border: '2px solid #22C55E', borderRadius: 12, padding: '1rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ fontWeight: 700, color: '#15803D' }}>✅ Match accepted! Head to the provider location.</div>
