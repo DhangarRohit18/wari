@@ -103,8 +103,10 @@ const MOCK_DATA: Record<string, any> = {
     ]
   },
   '/resources/prediction': {
+    total_pilgrims_estimate: 1450000,
     food: {
       demand_meals: 45000,
+      available_capacity: 43000,
       shortage_meals: 2000,
       shortage_risk: 'HIGH',
       recommendation: 'Divert 2000 meals to Wakhari Camp immediately.'
@@ -114,6 +116,10 @@ const MOCK_DATA: Record<string, any> = {
       available_points: 105,
       shortage_risk: 'LOW',
       recommendation: 'Water supply is stable.'
+    },
+    medical: {
+      estimated_cases: 450,
+      recommendation: 'Deploy 2 additional mobile clinics to Ghat zone.'
     }
   },
   '/ai/recommend-water': {
