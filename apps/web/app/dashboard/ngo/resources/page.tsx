@@ -5,15 +5,48 @@ import Sidebar from '@/components/Sidebar';
 
 export default function NGOResourcesPage() {
   const [pred, setPred] = useState<any>(null);
+  const [inventory, setInventory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
+  // CRUD States
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newItemName, setNewItemName] = useState('');
+  const [newAllocated, setNewAllocated] = useState(100);
+  const [newRemaining, setNewRemaining] = useState(100);
+
   const fetch = async () => {
     setRefreshing(true);
-    const data = await apiCall('/resources/prediction');
-    setPred(data);
+    const [predData, invData] = await Promise.all([
+      apiCall('/resources/prediction'),
+      apiCall('/ngo/resources')
+    ]);
+    setPred(predData);
+    setInventory(invData || []);
     setLoading(false);
     setRefreshing(false);
+  };
+
+  const handleAddItem = (e: React.FormEvent) => {
+    e.preventDefault();
+    const ratio = newRemaining / newAllocated;
+    const risk = ratio > 0.5 ? 'LOW' : ratio > 0.2 ? 'MEDIUM' : 'HIGH';
+    const newItem = {
+      id: `res${Date.now()}`,
+      item_name: newItemName,
+      allocated: newAllocated,
+      remaining: newRemaining,
+      risk_level: risk
+    };
+    setInventory([newItem, ...inventory]);
+    setShowAddModal(false);
+    setNewItemName('');
+  };
+
+  const handleDeleteItem = (id: string) => {
+    if (confirm("Are you sure you want to remove this item?")) {
+      setInventory(inventory.filter((i: any) => i.id !== id));
+    }
   };
 
   useEffect(() => { fetch(); }, []);
@@ -85,15 +118,71 @@ export default function NGOResourcesPage() {
               </div>
 
               {/* Medical */}
-              <div className="card" style={{ borderLeft: '4px solid #8B5CF6' }}>
+              <div className="card" style={{ borderLeft: '4px solid #8B5CF6', marginBottom: '1.5rem' }}>
                 <h3 style={{ marginBottom: '0.75rem' }}>🏥 Medical Demand</h3>
                 <div style={{ fontSize: '0.85rem', color: '#374151' }}>Estimated cases today: <strong style={{ color: '#8B5CF6', fontSize: '1.25rem' }}>{pred.medical.estimated_cases}</strong></div>
                 <div style={{ fontSize: '0.8rem', color: '#6B7280', marginTop: '0.5rem', fontStyle: 'italic' }}>💡 {pred.medical.recommendation}</div>
                 <div style={{ fontSize: '0.7rem', color: '#9CA3AF', marginTop: '0.75rem' }}>Based on {pred.total_pilgrims_estimate.toLocaleString()} estimated pilgrims · DEMO DATA</div>
               </div>
+              
+              {/* Inventory Tracking CRUD */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '2rem', marginBottom: '1rem' }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 800 }}>📦 Inventory Management</h2>
+                <button className="btn btn-primary btn-sm" onClick={() => setShowAddModal(true)}>➕ Add Item</button>
+              </div>
+              
+              <div className="card">
+                {inventory.length === 0 ? <p style={{ color: '#9CA3AF' }}>No inventory items.</p> : inventory.map((item: any) => (
+                  <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 0', borderBottom: '1px solid #F3F4F6' }}>
+                    <div>
+                      <div style={{ fontWeight: 700 }}>{item.item_name}</div>
+                      <div style={{ fontSize: '0.75rem', color: '#6B7280' }}>
+                        Remaining: <strong>{item.remaining.toLocaleString()}</strong> / {item.allocated.toLocaleString()}
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <span className={`badge ${item.risk_level === 'LOW' ? 'badge-green' : item.risk_level === 'MEDIUM' ? 'badge-yellow' : 'badge-red'}`}>{item.risk_level} RISK</span>
+                      <button onClick={() => handleDeleteItem(item.id)} style={{ background: 'transparent', border: 'none', color: '#EF4444', cursor: 'pointer', padding: '0.25rem' }} title="Remove Item">
+                        🗑️
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </>
           )}
         </div>
+
+        {/* Add Inventory Modal */}
+        {showAddModal && (
+          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="card" style={{ width: 400, maxWidth: '90%', position: 'relative' }}>
+              <button 
+                onClick={() => setShowAddModal(false)}
+                style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'transparent', border: 'none', fontSize: '1.25rem', cursor: 'pointer' }}
+              >
+                ✕
+              </button>
+              <h2 style={{ marginBottom: '1.5rem', fontWeight: 800 }}>Add Inventory Item</h2>
+              <form onSubmit={handleAddItem} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.85rem', fontWeight: 600 }}>Item Name</label>
+                  <input type="text" value={newItemName} onChange={e => setNewItemName(e.target.value)} required style={{ width: '100%', padding: '0.5rem', borderRadius: 8, border: '1px solid #E2E8F0' }} placeholder="e.g. Paracetamol Boxes" />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.85rem', fontWeight: 600 }}>Total Allocated Quantity</label>
+                  <input type="number" value={newAllocated} onChange={e => setNewAllocated(Number(e.target.value))} required min={1} style={{ width: '100%', padding: '0.5rem', borderRadius: 8, border: '1px solid #E2E8F0' }} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.85rem', fontWeight: 600 }}>Currently Remaining</label>
+                  <input type="number" value={newRemaining} onChange={e => setNewRemaining(Number(e.target.value))} required min={0} style={{ width: '100%', padding: '0.5rem', borderRadius: 8, border: '1px solid #E2E8F0' }} />
+                </div>
+                <button type="submit" className="btn btn-primary" style={{ marginTop: '0.5rem' }}>Add Item</button>
+              </form>
+            </div>
+          </div>
+        )}
+
       </main>
     </div>
   );
