@@ -1,0 +1,344 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap');
+
+/* ─── Premium & Culturally Authentic Palette for Wari Pilgrimage ─── */
+:root {
+  /* Primary Theme: Sacred Saffron (केसरी) & Deep Royal Slate */
+  --color-primary: #D97706; /* Rich Saffron / Ember */
+  --color-primary-light: #F59E0B;
+  --color-primary-dark: #B45309;
+  --color-accent: #C2410C;
+
+  /* Devotional Warm Neutral Backgrounds */
+  --color-bg: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-surface-elevated: #FFFFFF;
+  --color-border: #E2E8F0;
+  --color-border-subtle: #F1F5F9;
+
+  /* Typography Colors */
+  --color-text: #0F172A; /* Deep Slate Blue - clear & readable */
+  --color-text-secondary: #475569;
+  --color-text-muted: #64748B;
+
+  /* Functional Status Colors */
+  --color-success: #16A34A;
+  --color-warning: #D97706;
+  --color-danger: #DC2626;
+  --color-info: #2563EB;
+
+  /* Crowd Safety Levels */
+  --crowd-green: #16A34A;
+  --crowd-yellow: #CA8A04;
+  --crowd-orange: #EA580C;
+  --crowd-red: #DC2626;
+
+  /* Clean Professional Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 10px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+  --shadow-saffron: 0 4px 14px 0 rgba(217, 119, 6, 0.25);
+
+  /* Precise Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+}
+
+/* ─── Reset & Base Typography ────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+}
+
+/* ─── Professional Typography ────────────────────────────────────── */
+h1 { font-size: 1.75rem; font-weight: 800; tracking: -0.02em; color: #0F172A; }
+h2 { font-size: 1.35rem; font-weight: 700; color: #0F172A; }
+h3 { font-size: 1.15rem; font-weight: 700; color: #1E293B; }
+h4 { font-size: 1rem; font-weight: 600; color: #334155; }
+p { line-height: 1.6; color: var(--color-text-secondary); }
+a { color: var(--color-primary); text-decoration: none; font-weight: 600; }
+a:hover { color: var(--color-primary-dark); }
+
+/* ─── Core Layout Structure ──────────────────────────────────────── */
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #F8FAFC;
+}
+
+.dashboard-main {
+  flex: 1;
+  margin-left: 260px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-header {
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--color-border);
+  padding: 1rem 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.02);
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 1.75rem;
+}
+
+/* ─── Professional Cards ─────────────────────────────────────────── */
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--color-border);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: #CBD5E1;
+}
+.card-sm { padding: 1rem; border-radius: var(--radius-md); }
+.card-xl { padding: 2rem; border-radius: var(--radius-xl); }
+.card-saffron {
+  background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+  color: white;
+  border: none;
+  box-shadow: var(--shadow-saffron);
+}
+
+/* ─── Refined Buttons ────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.15rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  box-shadow: 0 2px 4px rgba(217,119,6,0.2);
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+  box-shadow: 0 4px 10px rgba(217,119,6,0.3);
+}
+.btn-secondary {
+  background: #FFFFFF;
+  color: #334155;
+  border-color: #CBD5E1;
+}
+.btn-secondary:hover:not(:disabled) {
+  background: #F8FAFC;
+  border-color: #94A3B8;
+  color: #0F172A;
+}
+.btn-danger {
+  background: #DC2626;
+  color: white;
+}
+.btn-danger:hover:not(:disabled) { background: #B91C1C; }
+.btn-ghost { background: transparent; color: #64748B; }
+.btn-ghost:hover:not(:disabled) { background: #F1F5F9; color: #0F172A; }
+.btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; border-radius: var(--radius-sm); }
+.btn-lg { padding: 0.75rem 1.5rem; font-size: 1rem; border-radius: var(--radius-lg); }
+.btn-full { width: 100%; }
+
+/* ─── Emergency SOS Callout ──────────────────────────────────────── */
+.btn-sos {
+  background: linear-gradient(135deg, #DC2626, #991B1B);
+  color: white;
+  font-size: 1.35rem;
+  font-weight: 800;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 4px 20px rgba(220, 38, 38, 0.4);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-sos:hover {
+  transform: scale(1.04);
+  box-shadow: 0 6px 24px rgba(220, 38, 38, 0.6);
+}
+
+/* ─── Clean Badges ───────────────────────────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: var(--radius-full);
+  font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.badge-green { background: #DCFCE7; color: #15803D; border: 1px solid #BBF7D0; }
+.badge-yellow { background: #FEF9C3; color: #854D0E; border: 1px solid #FEF08A; }
+.badge-orange { background: #FFEDD5; color: #9A3412; border: 1px solid #FED7AA; }
+.badge-red { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
+.badge-blue { background: #DBEAFE; color: #1E40AF; border: 1px solid #BFDBFE; }
+.badge-gray { background: #F1F5F9; color: #475569; border: 1px solid #E2E8F0; }
+
+/* ─── Input Fields ───────────────────────────────────────────────── */
+.input {
+  width: 100%;
+  padding: 0.65rem 0.875rem;
+  border: 1px solid #CBD5E1;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-family: inherit;
+  background: #FFFFFF;
+  color: #0F172A;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+}
+.input:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15); }
+label { display: block; font-weight: 600; font-size: 0.825rem; margin-bottom: 0.35rem; color: #334155; }
+.form-group { margin-bottom: 1.15rem; }
+
+/* ─── Navigation Sidebar ────────────────────────────────────────── */
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  background: #FFFFFF;
+  border-right: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0; top: 0;
+  z-index: 100;
+}
+.sidebar-logo {
+  padding: 1.25rem 1.25rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.sidebar-logo-icon {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, #D97706, #B45309);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 1.2rem;
+}
+.sidebar-logo-text { font-size: 1.05rem; font-weight: 800; color: #0F172A; line-height: 1.2; }
+.sidebar-logo-sub { font-size: 0.68rem; color: #64748B; font-weight: 500; }
+
+.sidebar-nav { flex: 1; padding: 0.75rem 0.625rem; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; }
+.nav-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius-md);
+  color: #475569;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+  background: none; width: 100%; text-align: left;
+}
+.nav-item:hover { background: #F8FAFC; color: #0F172A; }
+.nav-item.active { background: #FEF3C7; color: #D97706; font-weight: 700; border-color: #FDE68A; }
+.nav-item-icon { font-size: 1.1rem; width: 22px; text-align: center; flex-shrink: 0; }
+.sidebar-footer { padding: 0.875rem; border-top: 1px solid var(--color-border); }
+
+/* ─── Stats Grid ────────────────────────────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.stat-card {
+  background: #FFFFFF;
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.stat-value { font-size: 1.85rem; font-weight: 800; line-height: 1.1; color: #0F172A; }
+.stat-label { font-size: 0.8rem; color: #64748B; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+
+/* ─── Modals & Toasts ───────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem;
+}
+.modal {
+  background: #FFFFFF;
+  border-radius: var(--radius-xl);
+  padding: 1.75rem;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border);
+}
+
+/* ─── Loading Spinner ───────────────────────────────────────────── */
+.spinner {
+  width: 28px; height: 28px;
+  border: 3px solid #E2E8F0;
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Mobile Responsiveness ─────────────────────────────────────── */
+.mobile-only { display: none; }
+
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .dashboard-main { margin-left: 0; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  h1 { font-size: 1.4rem; }
+  
+  .content-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .mobile-hidden { display: none !important; }
+  
+  .mobile-only { display: block; }
+  .mobile-only.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
