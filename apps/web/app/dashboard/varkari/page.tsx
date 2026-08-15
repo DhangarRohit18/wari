@@ -93,13 +93,13 @@ export default function VarkariHome() {
               <div 
                 style={{ background: 'white', padding: '0.25rem', borderRadius: 8, border: '1px solid #E2E8F0', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
                 onClick={() => {
-                  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(`Pilgrim Name: ${user.display_name}\nBlood Group: O+\nEmergency Contact: +91 98220 12345 (Guardian)\nMedical Conditions: None\nStatus: Verified Varkari`)}`;
+                  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(`Pilgrim Name: ${user.display_name}\nAadhar: 1234 5678 9012\nAddress: 45, Shivaji Nagar, Pune, Maharashtra\nBlood Group: O+\nEmergency Contact: +91 98220 12345 (Guardian)\nMedical Conditions: None\nStatus: Verified Varkari`)}`;
                   window.open(qrUrl, 'qrWindow', 'width=400,height=400,top=100,left=100');
                 }}
                 title="Pilgrim Identity QR - Click to enlarge for scanning"
               >
                 <img 
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=64x64&data=${encodeURIComponent(`Pilgrim Name: ${user.display_name}\nBlood Group: O+\nEmergency Contact: +91 98220 12345 (Guardian)\nMedical Conditions: None\nStatus: Verified Varkari`)}`} 
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=64x64&data=${encodeURIComponent(`Pilgrim Name: ${user.display_name}\nAadhar: 1234 5678 9012\nAddress: 45, Shivaji Nagar, Pune, Maharashtra\nBlood Group: O+\nEmergency Contact: +91 98220 12345 (Guardian)\nMedical Conditions: None\nStatus: Verified Varkari`)}`} 
                   alt="My QR ID" 
                   style={{ width: 44, height: 44, borderRadius: 4, display: 'block' }} 
                 />
