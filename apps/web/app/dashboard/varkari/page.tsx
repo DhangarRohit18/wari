@@ -78,13 +78,37 @@ export default function VarkariHome() {
         )}
 
         <header className="dashboard-header">
-          <div>
-            <h1 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              {t('devotionalGreeting')}
-            </h1>
-            <p style={{ fontSize: '0.825rem', color: '#475569', fontWeight: 500 }}>
-              {t('welcome')}, {user?.display_name || 'Pilgrim'} · Pandharpur Wari 2024
-            </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <div>
+              <h1 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0F172A', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                {t('devotionalGreeting')}
+              </h1>
+              <p style={{ fontSize: '0.825rem', color: '#475569', fontWeight: 500 }}>
+                {t('welcome')}, {user?.display_name || 'Pilgrim'} · Pandharpur Wari 2024
+              </p>
+            </div>
+            
+            {/* Pilgrim Identity QR Code */}
+            {user && (
+              <div 
+                style={{ background: 'white', padding: '0.25rem', borderRadius: 8, border: '1px solid #E2E8F0', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                onClick={() => {
+                  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(`Pilgrim Name: ${user.display_name}\nBlood Group: O+\nEmergency Contact: +91 98220 12345 (Guardian)\nMedical Conditions: None\nStatus: Verified Varkari`)}`;
+                  window.open(qrUrl, 'qrWindow', 'width=400,height=400,top=100,left=100');
+                }}
+                title="Pilgrim Identity QR - Click to enlarge for scanning"
+              >
+                <img 
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=64x64&data=${encodeURIComponent(`Pilgrim Name: ${user.display_name}\nBlood Group: O+\nEmergency Contact: +91 98220 12345 (Guardian)\nMedical Conditions: None\nStatus: Verified Varkari`)}`} 
+                  alt="My QR ID" 
+                  style={{ width: 44, height: 44, borderRadius: 4, display: 'block' }} 
+                />
+                <div style={{ display: 'flex', flexDirection: 'column', paddingRight: '0.5rem' }}>
+                  <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#0F172A' }}>My e-ID</span>
+                  <span style={{ fontSize: '0.6rem', color: '#64748B' }}>Tap to scan</span>
+                </div>
+              </div>
+            )}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
             {weather && (

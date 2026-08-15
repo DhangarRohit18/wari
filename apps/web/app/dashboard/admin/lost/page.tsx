@@ -89,11 +89,20 @@ export default function AdminLostPage() {
                     {lp.description?.slice(0, 100) || 'No description provided'}
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.75rem', color: '#6B7280', marginBottom: '0.75rem' }}>
-                    {lp.blood_group && <div>🩸 Blood: <strong>{lp.blood_group}</strong></div>}
-                    {lp.emergency_contact && <div>📞 <strong>{lp.emergency_contact}</strong></div>}
-                    <div>📱 QR: <strong style={{ color: '#6366F1', fontFamily: 'monospace' }}>{lp.qr_code}</strong></div>
-                    <div>📅 {new Date(lp.created_at).toLocaleDateString()}</div>
+                  <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem', alignItems: 'center' }}>
+                    <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.375rem', fontSize: '0.75rem', color: '#6B7280' }}>
+                      {lp.blood_group && <div>🩸 Blood: {lp.blood_group}</div>}
+                      {lp.emergency_contact && <div>📞 {lp.emergency_contact}</div>}
+                      <div style={{ fontFamily: 'monospace', color: '#6366F1' }}>ID: {lp.qr_code}</div>
+                      <div>📅 {new Date(lp.created_at).toLocaleDateString()}</div>
+                    </div>
+                    <img 
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(`MISSING PERSON\nName: ${lp.name}\nAge: ${lp.age}\nGender: ${lp.gender}\nBlood Group: ${lp.blood_group || 'Unknown'}\nGuardian Contact: ${lp.emergency_contact || 'N/A'}\nID: ${lp.qr_code}`)}`} 
+                      alt="Missing Person QR" 
+                      style={{ width: 64, height: 64, borderRadius: 8, border: '1px solid #E2E8F0', cursor: 'pointer' }}
+                      title="Scan to view missing person details"
+                      onClick={() => window.open(`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(`MISSING PERSON\nName: ${lp.name}\nAge: ${lp.age}\nGender: ${lp.gender}\nBlood Group: ${lp.blood_group || 'Unknown'}\nGuardian Contact: ${lp.emergency_contact || 'N/A'}\nID: ${lp.qr_code}`)}`, 'qrWindow', 'width=400,height=400,top=100,left=100')}
+                    />
                   </div>
 
                   {lp.status === 'MISSING' && (
