@@ -27,6 +27,7 @@ export default function VarkariMapPage() {
   const [wellness, setWellness] = useState<any[]>([]);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -130,15 +131,15 @@ export default function VarkariMapPage() {
             <button 
               className="btn" 
               style={{ background: '#F97316', color: 'white', boxShadow: '0 4px 12px rgba(249, 115, 22, 0.4)', fontWeight: 800, border: '2px solid white' }}
-              onClick={() => (window as any).showFeedback = true}
+              onClick={() => setShowFeedback(true)}
             >
               ⚠️ Report Route Issue
             </button>
           </div>
 
           {/* Route Feedback Modal */}
-          {(window as any).showFeedback && (
-            <div className="modal-overlay" onClick={() => { (window as any).showFeedback = false; setLoading(true); setTimeout(() => setLoading(false), 50); }}>
+          {showFeedback && (
+            <div className="modal-overlay" onClick={() => { setShowFeedback(false); setLoading(true); setTimeout(() => setLoading(false), 50); }}>
               <div className="modal" onClick={e => e.stopPropagation()}>
                 <h2 style={{ marginBottom: '0.5rem', color: '#F97316' }}>⚠️ Crowdsourced Route Feedback</h2>
                 <p style={{ color: '#6B7280', fontSize: '0.875rem', marginBottom: '1.5rem' }}>Help re-route other pilgrims by reporting live ground conditions.</p>
@@ -154,14 +155,14 @@ export default function VarkariMapPage() {
                         (e.currentTarget as any).innerHTML = '✅ Reported'; 
                         (e.currentTarget as any).style.background = '#DCFCE7'; 
                         (e.currentTarget as any).style.borderColor = '#22C55E';
-                        setTimeout(() => { (window as any).showFeedback = false; setLoading(true); setTimeout(() => setLoading(false), 50); }, 1000);
+                        setTimeout(() => { setShowFeedback(false); setLoading(true); setTimeout(() => setLoading(false), 50); }, 1000);
                       }}>
                       <span style={{ fontSize: '2rem' }}>{f.icon}</span>
                       <span style={{ fontSize: '0.75rem', fontWeight: 700, marginTop: '0.5rem', textAlign: 'center' }}>{f.label}</span>
                     </button>
                   ))}
                 </div>
-                <button className="btn btn-secondary btn-full" style={{ marginTop: '1.5rem' }} onClick={() => { (window as any).showFeedback = false; setLoading(true); setTimeout(() => setLoading(false), 50); }}>Cancel</button>
+                <button className="btn btn-secondary btn-full" style={{ marginTop: '1.5rem' }} onClick={() => { setShowFeedback(false); setLoading(true); setTimeout(() => setLoading(false), 50); }}>Cancel</button>
               </div>
             </div>
           )}

@@ -37,6 +37,7 @@ export default function WariConnectPage() {
   const [match, setMatch] = useState<any>(null);
   const [acceptedMatch, setAcceptedMatch] = useState(false);
   const [accepting, setAccepting] = useState(false);
+  const [showDindi, setShowDindi] = useState(false);
   const LAT = 17.6741, LON = 75.3279;
 
   const fetchPosts = async () => {
@@ -127,14 +128,14 @@ export default function WariConnectPage() {
           <div style={{ display: 'flex', gap: '0.5rem' }}>
             <button className="btn btn-secondary btn-sm" onClick={() => setShowNeedOffer(true)}>🤝 Need/Offer</button>
             <button className="btn btn-primary btn-sm" onClick={() => setShowCreate(true)}>+ Post</button>
-            <button className="btn btn-sm" style={{ background: '#7C3AED', color: 'white' }} onClick={() => (window as any).showDindi = true}>🚩 Join Dindi</button>
+            <button className="btn btn-sm" style={{ background: '#7C3AED', color: 'white' }} onClick={() => setShowDindi(true)}>🚩 Join Dindi</button>
           </div>
         </header>
 
         <div className="dashboard-content">
           {/* Join Dindi Prototype Modal */}
-          {(window as any).showDindi && (
-            <div className="modal-overlay" onClick={() => { (window as any).showDindi = false; fetchPosts(); /* force re-render */ }}>
+          {showDindi && (
+            <div className="modal-overlay" onClick={() => { setShowDindi(false); fetchPosts(); /* force re-render */ }}>
               <div className="modal" onClick={e => e.stopPropagation()}>
                 <h2 style={{ marginBottom: '0.5rem', color: '#7C3AED' }}>🚩 Join a Dindi (Community Sync)</h2>
                 <p style={{ color: '#6B7280', fontSize: '0.875rem', marginBottom: '1.5rem' }}>Find and join verified pilgrim groups walking near your location.</p>
@@ -157,7 +158,7 @@ export default function WariConnectPage() {
                     </div>
                   ))}
                 </div>
-                <button className="btn btn-secondary btn-full" style={{ marginTop: '1.5rem' }} onClick={() => { (window as any).showDindi = false; fetchPosts(); }}>Close</button>
+                <button className="btn btn-secondary btn-full" style={{ marginTop: '1.5rem' }} onClick={() => { setShowDindi(false); fetchPosts(); }}>Close</button>
               </div>
             </div>
           )}
