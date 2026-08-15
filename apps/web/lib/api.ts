@@ -102,6 +102,20 @@ const MOCK_DATA: Record<string, any> = {
       { name: 'Shri Vitthal Mahaprasad Hall', distance_m: 300, walk_minutes: 4, estimated_queue_minutes: 25, ai_score: 8.2 },
     ]
   },
+  '/resources/prediction': {
+    food: {
+      demand_meals: 45000,
+      shortage_meals: 2000,
+      shortage_risk: 'HIGH',
+      recommendation: 'Divert 2000 meals to Wakhari Camp immediately.'
+    },
+    water: {
+      total_points: 120,
+      available_points: 105,
+      shortage_risk: 'LOW',
+      recommendation: 'Water supply is stable.'
+    }
+  },
   '/ai/recommend-water': {
     explanation: 'Nearest high-quality water stations:',
     recommendations: [
