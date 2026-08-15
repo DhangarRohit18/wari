@@ -9,6 +9,7 @@ export default function PoliceMissingPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('MISSING');
   const [marking, setMarking] = useState<string | null>(null);
+  const [showQrModal, setShowQrModal] = useState<any>(null);
 
   useEffect(() => {
     apiCall('/lost-person').then(data => { setCases(data); setLoading(false); });
@@ -95,7 +96,7 @@ export default function PoliceMissingPage() {
                       alt="Missing Person QR" 
                       style={{ width: 64, height: 64, borderRadius: 8, border: '1px solid #E2E8F0', cursor: 'pointer' }}
                       title="Scan to view missing person details"
-                      onClick={() => window.open(`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(`MISSING PERSON\nName: ${lp.name}\nAge: ${lp.age}\nGender: ${lp.gender}\nAadhar: 9876 5432 ${lp.id.slice(0,4).replace(/\D/g, '0').padEnd(4, '0')}\nAddress: 12, Pandurang Niwas, Wari Route\nBlood Group: ${lp.blood_group || 'Unknown'}\nGuardian Contact: ${lp.emergency_contact || 'N/A'}\nID: ${lp.qr_code}`)}`, 'qrWindow', 'width=400,height=400,top=100,left=100')}
+                      onClick={() => setShowQrModal(lp)}
                     />
                   </div>
                   {lp.status === 'MISSING' && (
@@ -107,6 +108,37 @@ export default function PoliceMissingPage() {
                 </div>
               ))}
               {filtered.length === 0 && <div style={{ textAlign: 'center', padding: '3rem', color: '#9CA3AF', gridColumn: '1/-1' }}>No cases found</div>}
+            </div>
+          )}
+
+          {/* Real-time QR Modal */}
+          {showQrModal && (
+            <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+              <div className="card" style={{ width: '90%', maxWidth: 360, background: 'white', borderRadius: 16, padding: '2rem', textAlign: 'center', position: 'relative' }}>
+                <button 
+                  onClick={() => setShowQrModal(null)}
+                  style={{ position: 'absolute', top: '1rem', right: '1rem', background: '#F1F5F9', border: 'none', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', fontWeight: 800, color: '#64748B' }}
+                >
+                  ✕
+                </button>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.5rem' }}>Missing Person ID</h3>
+                <p style={{ fontSize: '0.85rem', color: '#64748B', marginBottom: '1.5rem' }}>Scan this code to identify the pilgrim.</p>
+                
+                <div style={{ background: '#F8FAFC', padding: '1rem', borderRadius: 12, display: 'inline-block', marginBottom: '1.5rem', border: '1px solid #E2E8F0' }}>
+                  <img 
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(`MISSING PERSON\nName: ${showQrModal.name}\nAge: ${showQrModal.age}\nGender: ${showQrModal.gender}\nAadhar: 9876 5432 ${showQrModal.id.slice(0,4).replace(/\D/g, '0').padEnd(4, '0')}\nAddress: 12, Pandurang Niwas, Wari Route\nBlood Group: ${showQrModal.blood_group || 'Unknown'}\nGuardian Contact: ${showQrModal.emergency_contact || 'N/A'}\nID: ${showQrModal.qr_code}`)}`} 
+                    alt="Enlarged QR ID" 
+                    style={{ width: 200, height: 200, display: 'block' }} 
+                  />
+                </div>
+                
+                <div style={{ textAlign: 'left', background: '#F1F5F9', padding: '1rem', borderRadius: 8, fontSize: '0.8rem', color: '#334155' }}>
+                  <div style={{ marginBottom: '0.25rem' }}><strong>Name:</strong> {showQrModal.name}</div>
+                  <div style={{ marginBottom: '0.25rem' }}><strong>Aadhar:</strong> 9876 5432 {showQrModal.id.slice(0,4).replace(/\D/g, '0').padEnd(4, '0')}</div>
+                  <div style={{ marginBottom: '0.25rem' }}><strong>Guardian:</strong> {showQrModal.emergency_contact}</div>
+                  <div><span className={`badge ${showQrModal.status === 'MISSING' ? 'badge-red' : 'badge-green'}`}>{showQrModal.status}</span></div>
+                </div>
+              </div>
             </div>
           )}
         </div>

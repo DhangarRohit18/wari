@@ -22,6 +22,7 @@ export default function VarkariHome() {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isOnline, setIsOnline] = useState(true);
+  const [showQrModal, setShowQrModal] = useState(false);
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
@@ -90,24 +91,53 @@ export default function VarkariHome() {
             
             {/* Pilgrim Identity QR Code */}
             {user && (
-              <div 
-                style={{ background: 'white', padding: '0.25rem', borderRadius: 8, border: '1px solid #E2E8F0', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-                onClick={() => {
-                  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(`Pilgrim Name: ${user.display_name}\nAadhar: 1234 5678 9012\nAddress: 45, Shivaji Nagar, Pune, Maharashtra\nBlood Group: O+\nEmergency Contact: +91 98220 12345 (Guardian)\nMedical Conditions: None\nStatus: Verified Varkari`)}`;
-                  window.open(qrUrl, 'qrWindow', 'width=400,height=400,top=100,left=100');
-                }}
-                title="Pilgrim Identity QR - Click to enlarge for scanning"
-              >
-                <img 
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=64x64&data=${encodeURIComponent(`Pilgrim Name: ${user.display_name}\nAadhar: 1234 5678 9012\nAddress: 45, Shivaji Nagar, Pune, Maharashtra\nBlood Group: O+\nEmergency Contact: +91 98220 12345 (Guardian)\nMedical Conditions: None\nStatus: Verified Varkari`)}`} 
-                  alt="My QR ID" 
-                  style={{ width: 44, height: 44, borderRadius: 4, display: 'block' }} 
-                />
-                <div style={{ display: 'flex', flexDirection: 'column', paddingRight: '0.5rem' }}>
-                  <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#0F172A' }}>My e-ID</span>
-                  <span style={{ fontSize: '0.6rem', color: '#64748B' }}>Tap to scan</span>
+              <>
+                <div 
+                  style={{ background: 'white', padding: '0.25rem', borderRadius: 8, border: '1px solid #E2E8F0', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                  onClick={() => setShowQrModal(true)}
+                  title="Pilgrim Identity QR - Click to enlarge for scanning"
+                >
+                  <img 
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=64x64&data=${encodeURIComponent(`Pilgrim Name: ${user.display_name}\nAadhar: 1234 5678 9012\nAddress: 45, Shivaji Nagar, Pune, Maharashtra\nBlood Group: O+\nEmergency Contact: +91 98220 12345 (Guardian)\nMedical Conditions: None\nStatus: Verified Varkari`)}`} 
+                    alt="My QR ID" 
+                    style={{ width: 44, height: 44, borderRadius: 4, display: 'block' }} 
+                  />
+                  <div style={{ display: 'flex', flexDirection: 'column', paddingRight: '0.5rem' }}>
+                    <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#0F172A' }}>My e-ID</span>
+                    <span style={{ fontSize: '0.6rem', color: '#64748B' }}>Tap to scan</span>
+                  </div>
                 </div>
-              </div>
+
+                {showQrModal && (
+                  <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+                    <div className="card" style={{ width: '90%', maxWidth: 360, background: 'white', borderRadius: 16, padding: '2rem', textAlign: 'center', position: 'relative' }}>
+                      <button 
+                        onClick={() => setShowQrModal(false)}
+                        style={{ position: 'absolute', top: '1rem', right: '1rem', background: '#F1F5F9', border: 'none', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', fontWeight: 800, color: '#64748B' }}
+                      >
+                        ✕
+                      </button>
+                      <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.5rem' }}>Digital Pilgrim ID</h3>
+                      <p style={{ fontSize: '0.85rem', color: '#64748B', marginBottom: '1.5rem' }}>Scan this QR code to verify identity or access emergency contacts.</p>
+                      
+                      <div style={{ background: '#F8FAFC', padding: '1rem', borderRadius: 12, display: 'inline-block', marginBottom: '1.5rem', border: '1px solid #E2E8F0' }}>
+                        <img 
+                          src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(`Pilgrim Name: ${user.display_name}\nAadhar: 1234 5678 9012\nAddress: 45, Shivaji Nagar, Pune, Maharashtra\nBlood Group: O+\nEmergency Contact: +91 98220 12345 (Guardian)\nMedical Conditions: None\nStatus: Verified Varkari`)}`} 
+                          alt="Enlarged QR ID" 
+                          style={{ width: 200, height: 200, display: 'block' }} 
+                        />
+                      </div>
+                      
+                      <div style={{ textAlign: 'left', background: '#F1F5F9', padding: '1rem', borderRadius: 8, fontSize: '0.8rem', color: '#334155' }}>
+                        <div style={{ marginBottom: '0.25rem' }}><strong>Name:</strong> {user.display_name}</div>
+                        <div style={{ marginBottom: '0.25rem' }}><strong>Aadhar:</strong> 1234 5678 9012</div>
+                        <div style={{ marginBottom: '0.25rem' }}><strong>Emergency:</strong> +91 98220 12345</div>
+                        <div><span className="badge badge-green">Verified Varkari</span></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
