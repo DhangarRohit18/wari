@@ -48,9 +48,22 @@ export default function VolunteerSosPage() {
             <h1 style={{ fontSize: '1.25rem', fontWeight: 800 }}>🆘 SOS Assignment</h1>
             <p style={{ fontSize: '0.8rem', color: '#6B7280' }}>Volunteer — Accept and resolve emergency cases</p>
           </div>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
             <span className="badge badge-red">{sos.filter(s => s.status === 'CREATED').length} New</span>
             <span className="badge badge-green">{resolved.length} Resolved</span>
+            <button className="btn btn-primary btn-sm" onClick={() => {
+              const newSos = {
+                id: `sos${Date.now()}`,
+                category: ['MEDICAL', 'DEHYDRATION', 'LOST'][Math.floor(Math.random() * 3)],
+                status: 'CREATED',
+                description: 'Urgent assistance requested (Simulated)',
+                latitude: 17.67 + Math.random() * 0.05,
+                longitude: 75.32 + Math.random() * 0.05,
+                created_at: new Date().toISOString(),
+                is_offline: Math.random() > 0.5
+              };
+              setSos([newSos, ...sos]);
+            }}>🚨 Simulate SOS</button>
           </div>
         </header>
         <div className="dashboard-content">

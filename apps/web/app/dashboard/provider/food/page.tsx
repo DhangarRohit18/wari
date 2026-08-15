@@ -10,7 +10,45 @@ export default function ProviderFoodPage() {
   const [updating, setUpdating] = useState<string | null>(null);
   const [queueInputs, setQueueInputs] = useState<Record<string, string>>({});
 
-  useEffect(() => { apiCall('/food').then(d => { setFood(d); setLoading(false); }); }, []);
+  // CRUD States
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [newCapacity, setNewCapacity] = useState(500);
+  const [newOpen, setNewOpen] = useState('08:00');
+  const [newClose, setNewClose] = useState('20:00');
+
+  useEffect(() => { 
+    apiCall('/food').then(d => { 
+      if (!d || d.length === 0) {
+        d = [{ id: 'f1', name: 'Ghat Mahaprasad', provider: 'Wari Seva Mandal', available_now: true, current_count: 150, capacity: 500, estimated_queue_minutes: 10, hygiene_rating: 4.8, opening_time: '08:00', closing_time: '20:00' }];
+      }
+      setFood(d); 
+      setLoading(false); 
+    }); 
+  }, []);
+
+  const handleAddFood = (e: React.FormEvent) => {
+    e.preventDefault();
+    const newFc = {
+      id: `f${Date.now()}`,
+      name: newName,
+      provider: 'Current Provider',
+      available_now: false,
+      current_count: 0,
+      capacity: newCapacity,
+      estimated_queue_minutes: 0,
+      hygiene_rating: 5.0,
+      opening_time: newOpen,
+      closing_time: newClose,
+    };
+    setFood([newFc, ...food]);
+    setShowAddModal(false);
+    setNewName('');
+  };
+
+  const handleDeleteFood = (id: string) => {
+    if (confirm("Remove this food centre?")) setFood(food.filter(f => f.id !== id));
+  };
 
   const toggle = async (fc: any) => {
     setUpdating(fc.id);
@@ -38,7 +76,10 @@ export default function ProviderFoodPage() {
             <h1 style={{ fontSize: '1.25rem', fontWeight: 800 }}>🍛 My Food Centre</h1>
             <p style={{ fontSize: '0.8rem', color: '#6B7280' }}>Service Provider — Manage your Annadan seva</p>
           </div>
-          <span className="badge badge-green">{food.filter(f => f.available_now).length}/{food.length} Open</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <span className="badge badge-green">{food.filter(f => f.available_now).length}/{food.length} Open</span>
+            <button className="btn btn-primary btn-sm" onClick={() => setShowAddModal(true)}>➕ Register Centre</button>
+          </div>
         </header>
         <div className="dashboard-content">
           {loading ? <div style={{ textAlign: 'center', padding: '3rem' }}><div className="spinner" style={{ width: 40, height: 40, margin: 'auto' }} /></div> : (
@@ -71,15 +112,58 @@ export default function ProviderFoodPage() {
                       onChange={e => setQueueInputs(p => ({ ...p, [fc.id]: e.target.value }))} />
                     <button className="btn btn-secondary btn-sm" onClick={() => updateQueue(fc)} disabled={updating === fc.id}>Set</button>
                   </div>
-                  <button className="btn btn-sm btn-full" style={{ background: fc.available_now ? '#EF4444' : '#22C55E', color: 'white' }}
-                    onClick={() => toggle(fc)} disabled={updating === fc.id}>
-                    {updating === fc.id ? '...' : fc.available_now ? '✗ Close Serving' : '✓ Start Serving'}
-                  </button>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button className="btn btn-sm" style={{ flex: 1, background: fc.available_now ? '#EF4444' : '#22C55E', color: 'white' }}
+                      onClick={() => toggle(fc)} disabled={updating === fc.id}>
+                      {updating === fc.id ? '...' : fc.available_now ? '✗ Close Serving' : '✓ Start Serving'}
+                    </button>
+                    <button onClick={() => handleDeleteFood(fc.id)} style={{ background: '#FEE2E2', border: '1px solid #FECACA', borderRadius: 6, color: '#EF4444', cursor: 'pointer', padding: '0.25rem 0.75rem' }} title="Remove Centre">
+                      🗑️
+                    </button>
+                  </div>
                 </div>
               ))}
+              {food.length === 0 && <p style={{ color: '#9CA3AF', gridColumn: '1/-1', textAlign: 'center' }}>No food centres registered.</p>}
             </div>
           )}
         </div>
+
+        {/* Add Food Modal */}
+        {showAddModal && (
+          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="card" style={{ width: 400, maxWidth: '90%', position: 'relative' }}>
+              <button 
+                onClick={() => setShowAddModal(false)}
+                style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'transparent', border: 'none', fontSize: '1.25rem', cursor: 'pointer' }}
+              >
+                ✕
+              </button>
+              <h2 style={{ marginBottom: '1.5rem', fontWeight: 800 }}>Register Food Centre</h2>
+              <form onSubmit={handleAddFood} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.85rem', fontWeight: 600 }}>Centre Name</label>
+                  <input type="text" value={newName} onChange={e => setNewName(e.target.value)} required style={{ width: '100%', padding: '0.5rem', borderRadius: 8, border: '1px solid #E2E8F0' }} placeholder="e.g. Mahaprasad Tent 1" />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.85rem', fontWeight: 600 }}>Capacity / Meals</label>
+                  <input type="number" value={newCapacity} onChange={e => setNewCapacity(Number(e.target.value))} required min={10} style={{ width: '100%', padding: '0.5rem', borderRadius: 8, border: '1px solid #E2E8F0' }} />
+                </div>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <div style={{ flex: 1 }}>
+                    <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.85rem', fontWeight: 600 }}>Opening Time</label>
+                    <input type="time" value={newOpen} onChange={e => setNewOpen(e.target.value)} required style={{ width: '100%', padding: '0.5rem', borderRadius: 8, border: '1px solid #E2E8F0' }} />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.85rem', fontWeight: 600 }}>Closing Time</label>
+                    <input type="time" value={newClose} onChange={e => setNewClose(e.target.value)} required style={{ width: '100%', padding: '0.5rem', borderRadius: 8, border: '1px solid #E2E8F0' }} />
+                  </div>
+                </div>
+                <button type="submit" className="btn btn-primary" style={{ marginTop: '0.5rem' }}>Register</button>
+              </form>
+            </div>
+          </div>
+        )}
+
       </main>
     </div>
   );
