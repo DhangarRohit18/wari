@@ -16,9 +16,36 @@ export default function AdminUsersPage() {
   const [filter, setFilter] = useState('ALL');
   const [search, setSearch] = useState('');
 
+  // CRUD States
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newEmail, setNewEmail] = useState('');
+  const [newRole, setNewRole] = useState('VARKARI');
+
   useEffect(() => {
     apiCall('/admin/users', {}, token).then(data => { setUsers(data); setLoading(false); });
   }, []);
+
+  const handleAddUser = (e: React.FormEvent) => {
+    e.preventDefault();
+    const newUser = {
+      id: `u${Date.now()}`,
+      email: newEmail,
+      role: newRole,
+      is_verified: true,
+      is_active: true,
+      created_at: new Date().toISOString(),
+    };
+    setUsers([newUser, ...users]);
+    setShowAddModal(false);
+    setNewEmail('');
+    setNewRole('VARKARI');
+  };
+
+  const handleDeleteUser = (id: string) => {
+    if (confirm("Delete this user permanently?")) {
+      setUsers(users.filter(u => u.id !== id));
+    }
+  };
 
   const roles = ['ALL', ...Array.from(new Set(users.map(u => u.role)))];
   const filtered = users.filter(u => {
@@ -36,7 +63,10 @@ export default function AdminUsersPage() {
             <h1 style={{ fontSize: '1.25rem', fontWeight: 800 }}>👥 User Management</h1>
             <p style={{ fontSize: '0.8rem', color: '#6B7280' }}>All registered WariVerse users</p>
           </div>
-          <span className="badge badge-blue">{users.length} total users</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <span className="badge badge-blue">{users.length} total users</span>
+            <button className="btn btn-primary btn-sm" onClick={() => setShowAddModal(true)}>➕ Create User</button>
+          </div>
         </header>
 
         <div className="dashboard-content">
@@ -77,7 +107,7 @@ export default function AdminUsersPage() {
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ borderBottom: '2px solid #E5E7EB' }}>
-                    {['Email', 'Role', 'Verified', 'Active', 'Joined'].map(h => (
+                    {['Email', 'Role', 'Verified', 'Active', 'Joined', 'Actions'].map(h => (
                       <th key={h} style={{ textAlign: 'left', padding: '0.75rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: '#6B7280' }}>{h}</th>
                     ))}
                   </tr>
@@ -104,6 +134,11 @@ export default function AdminUsersPage() {
                       <td style={{ padding: '0.75rem 0.5rem', fontSize: '0.75rem', color: '#6B7280' }}>
                         {new Date(u.created_at).toLocaleDateString()}
                       </td>
+                      <td style={{ padding: '0.75rem 0.5rem' }}>
+                        <button onClick={() => handleDeleteUser(u.id)} style={{ background: 'transparent', border: 'none', color: '#EF4444', cursor: 'pointer', padding: '0.25rem' }} title="Delete User">
+                          🗑️
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -117,6 +152,36 @@ export default function AdminUsersPage() {
             </div>
           )}
         </div>
+
+        {/* Add User Modal */}
+        {showAddModal && (
+          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="card" style={{ width: 400, maxWidth: '90%', position: 'relative' }}>
+              <button 
+                onClick={() => setShowAddModal(false)}
+                style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'transparent', border: 'none', fontSize: '1.25rem', cursor: 'pointer' }}
+              >
+                ✕
+              </button>
+              <h2 style={{ marginBottom: '1.5rem', fontWeight: 800 }}>Create New User</h2>
+              <form onSubmit={handleAddUser} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.85rem', fontWeight: 600 }}>Email Address</label>
+                  <input type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} required style={{ width: '100%', padding: '0.5rem', borderRadius: 8, border: '1px solid #E2E8F0' }} placeholder="user@example.com" />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.85rem', fontWeight: 600 }}>Assign Role</label>
+                  <select value={newRole} onChange={e => setNewRole(e.target.value)} style={{ width: '100%', padding: '0.5rem', borderRadius: 8, border: '1px solid #E2E8F0' }}>
+                    {Object.keys(ROLE_COLORS).map(r => (
+                      <option key={r} value={r}>{r.replace('_', ' ')}</option>
+                    ))}
+                  </select>
+                </div>
+                <button type="submit" className="btn btn-primary" style={{ marginTop: '0.5rem' }}>Create User</button>
+              </form>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );

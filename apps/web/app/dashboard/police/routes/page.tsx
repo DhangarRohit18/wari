@@ -10,6 +10,10 @@ export default function PoliceRoutesPage() {
   const [weather, setWeather] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  // CRUD States
+  const [showAddModal, setShowAddModal] = useState<string | null>(null);
+  const [newMessage, setNewMessage] = useState('');
+
   useEffect(() => {
     Promise.all([
       apiCall('/community/posts?lat=17.6741&lon=75.3279&radius_km=100'),
@@ -20,6 +24,28 @@ export default function PoliceRoutesPage() {
       setLoading(false);
     });
   }, []);
+
+  const handleAddAdvisory = (e: React.FormEvent) => {
+    e.preventDefault();
+    const newPost = {
+      id: `p${Date.now()}`,
+      post_type: showAddModal,
+      message: newMessage,
+      author_name: 'Police Command',
+      created_at: new Date().toISOString(),
+      distance_m: 0,
+      is_verified: true,
+    };
+    setPosts([newPost, ...posts]);
+    setShowAddModal(null);
+    setNewMessage('');
+  };
+
+  const handleDeletePost = (id: string) => {
+    if (confirm("Remove this advisory?")) {
+      setPosts(posts.filter(p => p.id !== id));
+    }
+  };
 
   const routeWarnings = posts.filter(p => p.post_type === 'ROUTE_WARNING');
   const weatherWarnings = posts.filter(p => p.post_type === 'WEATHER_WARNING');
@@ -80,24 +106,44 @@ export default function PoliceRoutesPage() {
           {loading ? <div style={{ textAlign: 'center', padding: '3rem' }}><div className="spinner" style={{ width: 40, height: 40, margin: 'auto' }} /></div> : (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
               <div>
-                <h3 style={{ marginBottom: '1rem', color: '#F59E0B' }}>⚠️ Route Warnings ({routeWarnings.length})</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <h3 style={{ color: '#F59E0B', margin: 0 }}>⚠️ Route Warnings ({routeWarnings.length})</h3>
+                  <button className="btn btn-sm" style={{ background: '#F59E0B', color: 'white', border: 'none' }} onClick={() => setShowAddModal('ROUTE_WARNING')}>➕ Issue Alert</button>
+                </div>
                 {routeWarnings.length === 0 ? <p style={{ color: '#9CA3AF' }}>No route warnings reported</p> : routeWarnings.map((p: any) => (
                   <div key={p.id} className="card card-sm" style={{ marginBottom: '0.75rem', borderLeft: '4px solid #F59E0B' }}>
-                    <div style={{ fontWeight: 700, fontSize: '0.875rem', marginBottom: '0.25rem' }}>{p.message}</div>
-                    <div style={{ fontSize: '0.75rem', color: '#6B7280' }}>
-                      By {p.author_name} · {timeAgo(p.created_at)} · 📍 {p.distance_m}m away
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: '0.875rem', marginBottom: '0.25rem' }}>{p.message}</div>
+                        <div style={{ fontSize: '0.75rem', color: '#6B7280' }}>
+                          By {p.author_name} · {timeAgo(p.created_at)} · 📍 {p.distance_m}m away
+                        </div>
+                      </div>
+                      <button onClick={() => handleDeletePost(p.id)} style={{ background: 'transparent', border: 'none', color: '#EF4444', cursor: 'pointer', padding: '0.25rem' }} title="Remove Advisory">
+                        🗑️
+                      </button>
                     </div>
                     {p.is_verified && <span className="badge badge-green" style={{ marginTop: '0.375rem', fontSize: '0.65rem' }}>✓ Verified</span>}
                   </div>
                 ))}
               </div>
               <div>
-                <h3 style={{ marginBottom: '1rem', color: '#6366F1' }}>⛈️ Weather Warnings ({weatherWarnings.length})</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <h3 style={{ color: '#6366F1', margin: 0 }}>⛈️ Weather Warnings ({weatherWarnings.length})</h3>
+                  <button className="btn btn-sm" style={{ background: '#6366F1', color: 'white', border: 'none' }} onClick={() => setShowAddModal('WEATHER_WARNING')}>➕ Issue Alert</button>
+                </div>
                 {weatherWarnings.length === 0 ? <p style={{ color: '#9CA3AF' }}>No weather warnings reported</p> : weatherWarnings.map((p: any) => (
                   <div key={p.id} className="card card-sm" style={{ marginBottom: '0.75rem', borderLeft: '4px solid #6366F1' }}>
-                    <div style={{ fontWeight: 700, fontSize: '0.875rem', marginBottom: '0.25rem' }}>{p.message}</div>
-                    <div style={{ fontSize: '0.75rem', color: '#6B7280' }}>
-                      By {p.author_name} · {timeAgo(p.created_at)}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: '0.875rem', marginBottom: '0.25rem' }}>{p.message}</div>
+                        <div style={{ fontSize: '0.75rem', color: '#6B7280' }}>
+                          By {p.author_name} · {timeAgo(p.created_at)}
+                        </div>
+                      </div>
+                      <button onClick={() => handleDeletePost(p.id)} style={{ background: 'transparent', border: 'none', color: '#EF4444', cursor: 'pointer', padding: '0.25rem' }} title="Remove Advisory">
+                        🗑️
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -105,6 +151,29 @@ export default function PoliceRoutesPage() {
             </div>
           )}
         </div>
+
+        {/* Add Advisory Modal */}
+        {showAddModal && (
+          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="card" style={{ width: 400, maxWidth: '90%', position: 'relative' }}>
+              <button 
+                onClick={() => setShowAddModal(null)}
+                style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'transparent', border: 'none', fontSize: '1.25rem', cursor: 'pointer' }}
+              >
+                ✕
+              </button>
+              <h2 style={{ marginBottom: '1.5rem', fontWeight: 800 }}>Issue {showAddModal === 'ROUTE_WARNING' ? 'Route' : 'Weather'} Advisory</h2>
+              <form onSubmit={handleAddAdvisory} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.85rem', fontWeight: 600 }}>Message</label>
+                  <textarea value={newMessage} onChange={e => setNewMessage(e.target.value)} required style={{ width: '100%', padding: '0.5rem', borderRadius: 8, border: '1px solid #E2E8F0', minHeight: 80 }} placeholder={`e.g. ${showAddModal === 'ROUTE_WARNING' ? 'Road blocked due to heavy crowd near Ghat.' : 'Heavy rain expected in 1 hour. Move to shelter.'}`} />
+                </div>
+                <button type="submit" className="btn btn-primary" style={{ marginTop: '0.5rem', background: showAddModal === 'ROUTE_WARNING' ? '#F59E0B' : '#6366F1' }}>Broadcast Alert</button>
+              </form>
+            </div>
+          </div>
+        )}
+
       </main>
     </div>
   );

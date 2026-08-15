@@ -11,9 +11,38 @@ export default function CleanerToiletsPage() {
   const [issues, setIssues] = useState<Record<string, string>>({});
   const [filter, setFilter] = useState('ALL');
 
+  // CRUD States
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [newUnits, setNewUnits] = useState(10);
+  const [newGender, setNewGender] = useState('ALL');
+
   useEffect(() => {
     apiCall('/toilets').then(data => { setToilets(data); setLoading(false); });
   }, []);
+
+  const handleAddToilet = (e: React.FormEvent) => {
+    e.preventDefault();
+    const newBlock = {
+      id: `t${Date.now()}`,
+      name: newName,
+      total_units: newUnits,
+      gender: newGender,
+      status: 'CLEAN',
+      minutes_since_cleaned: 0,
+      rating: 5.0,
+    };
+    setToilets([newBlock, ...toilets]);
+    setShowAddModal(false);
+    setNewName('');
+    setNewGender('ALL');
+  };
+
+  const handleDeleteToilet = (id: string) => {
+    if (confirm("Remove this sanitation block?")) {
+      setToilets(toilets.filter(t => t.id !== id));
+    }
+  };
 
   const markCleaned = async (toiletId: string) => {
     setCleaning(toiletId);
@@ -69,7 +98,12 @@ export default function CleanerToiletsPage() {
                       <h4 style={{ marginBottom: '0.25rem' }}>{t.name}</h4>
                       <div style={{ fontSize: '0.75rem', color: '#6B7280' }}>{t.total_units} units · {t.gender}</div>
                     </div>
-                    <span className="badge" style={{ background: `${statusColor[t.status]}20`, color: statusColor[t.status] }}>{t.status}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <span className="badge" style={{ background: `${statusColor[t.status]}20`, color: statusColor[t.status] }}>{t.status}</span>
+                      <button onClick={() => handleDeleteToilet(t.id)} style={{ background: 'transparent', border: 'none', color: '#EF4444', cursor: 'pointer', padding: '0.15rem' }} title="Remove Sanitation Block">
+                        🗑️
+                      </button>
+                    </div>
                   </div>
                   <div style={{ fontSize: '0.8rem', color: '#6B7280', marginBottom: '0.75rem' }}>
                     🕐 Last cleaned: {t.minutes_since_cleaned !== null ? `${t.minutes_since_cleaned} min ago` : 'Unknown'}{' · '}
@@ -92,6 +126,42 @@ export default function CleanerToiletsPage() {
             </div>
           )}
         </div>
+
+        {/* Add Toilet Modal */}
+        {showAddModal && (
+          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="card" style={{ width: 400, maxWidth: '90%', position: 'relative' }}>
+              <button 
+                onClick={() => setShowAddModal(false)}
+                style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'transparent', border: 'none', fontSize: '1.25rem', cursor: 'pointer' }}
+              >
+                ✕
+              </button>
+              <h2 style={{ marginBottom: '1.5rem', fontWeight: 800 }}>Add Sanitation Block</h2>
+              <form onSubmit={handleAddToilet} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.85rem', fontWeight: 600 }}>Location Name</label>
+                  <input type="text" value={newName} onChange={e => setNewName(e.target.value)} required style={{ width: '100%', padding: '0.5rem', borderRadius: 8, border: '1px solid #E2E8F0' }} placeholder="e.g. Wakhari Main Block A" />
+                </div>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <div style={{ flex: 1 }}>
+                    <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.85rem', fontWeight: 600 }}>Total Units</label>
+                    <input type="number" value={newUnits} onChange={e => setNewUnits(Number(e.target.value))} required min={1} style={{ width: '100%', padding: '0.5rem', borderRadius: 8, border: '1px solid #E2E8F0' }} />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.85rem', fontWeight: 600 }}>Gender</label>
+                    <select value={newGender} onChange={e => setNewGender(e.target.value)} style={{ width: '100%', padding: '0.5rem', borderRadius: 8, border: '1px solid #E2E8F0' }}>
+                      <option value="ALL">All (Unisex)</option>
+                      <option value="MALE">Male Only</option>
+                      <option value="FEMALE">Female Only</option>
+                    </select>
+                  </div>
+                </div>
+                <button type="submit" className="btn btn-primary" style={{ marginTop: '0.5rem' }}>Register Block</button>
+              </form>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
