@@ -48,12 +48,12 @@ export default function VarkariMapPage() {
 
   const markers: any[] = [
     { lat: LAT, lon: LON, color: '#D97706', icon: '🚩', label: 'You (Pandharpur)', data: { name: 'Your Location', status: 'Active' }, layer: 'user' },
-    { lat: LAT + 0.004, lon: LON + 0.002, color: '#D97706', icon: '🍛', label: 'Shri Vitthal Annadan Trust', data: { name: 'Shri Vitthal Annadan Trust', available_now: true }, layer: 'food' },
-    { lat: LAT - 0.003, lon: LON + 0.005, color: '#2563EB', icon: '💧', label: 'Wakhari Water Station', data: { name: 'Wakhari Water Station', available_now: true }, layer: 'water' },
-    { lat: LAT + 0.006, lon: LON - 0.004, color: '#DC2626', icon: '🏥', label: 'Pandharpur District Hospital', data: { name: 'Pandharpur District Hospital', available_now: true, capacity: 50 }, layer: 'medical' },
-    { lat: LAT - 0.005, lon: LON - 0.002, color: '#0891B2', icon: '🚻', label: 'Public Sanitation Block A', data: { name: 'Public Sanitation Block A', available_now: true }, layer: 'toilets' },
-    { lat: LAT + 0.008, lon: LON + 0.001, color: '#7C3AED', icon: '🏠', label: 'Bhakta Niwas Shelter', data: { name: 'Bhakta Niwas Shelter', available_now: true, capacity: 200 }, layer: 'shelters' },
-    { lat: LAT + 0.002, lon: LON - 0.006, color: '#16A34A', icon: '🌿', label: 'Varkari Wellness Camp', data: { name: 'Varkari Wellness Camp', available_now: true }, layer: 'wellness' }
+    { lat: LAT + 0.025, lon: LON + 0.015, color: '#D97706', icon: '🍛', label: 'Shri Vitthal Annadan Trust', data: { name: 'Shri Vitthal Annadan Trust', available_now: true }, layer: 'food' },
+    { lat: LAT - 0.020, lon: LON + 0.030, color: '#2563EB', icon: '💧', label: 'Wakhari Water Station', data: { name: 'Wakhari Water Station', available_now: true }, layer: 'water' },
+    { lat: LAT + 0.035, lon: LON - 0.025, color: '#DC2626', icon: '🏥', label: 'Pandharpur District Hospital', data: { name: 'Pandharpur District Hospital', available_now: true, capacity: 50 }, layer: 'medical' },
+    { lat: LAT - 0.030, lon: LON - 0.015, color: '#0891B2', icon: '🚻', label: 'Public Sanitation Block A', data: { name: 'Public Sanitation Block A', available_now: true }, layer: 'toilets' },
+    { lat: LAT + 0.040, lon: LON + 0.005, color: '#7C3AED', icon: '🏠', label: 'Bhakta Niwas Shelter', data: { name: 'Bhakta Niwas Shelter', available_now: true, capacity: 200 }, layer: 'shelters' },
+    { lat: LAT + 0.015, lon: LON - 0.035, color: '#16A34A', icon: '🌿', label: 'Varkari Wellness Camp', data: { name: 'Varkari Wellness Camp', available_now: true }, layer: 'wellness' }
   ];
 
   food.forEach(item => markers.push({ lat: item.latitude, lon: item.longitude, color: '#D97706', icon: '🍛', label: item.name, data: item, layer: 'food' }));
