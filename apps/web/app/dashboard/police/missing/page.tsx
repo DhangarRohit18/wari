@@ -124,19 +124,12 @@ export default function PoliceMissingPage() {
                 <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.5rem' }}>Missing Person ID</h3>
                 <p style={{ fontSize: '0.85rem', color: '#64748B', marginBottom: '1.5rem' }}>Scan this code to identify the pilgrim.</p>
                 
-                <div style={{ background: '#F8FAFC', padding: '1rem', borderRadius: 12, display: 'inline-block', marginBottom: '1.5rem', border: '1px solid #E2E8F0' }}>
+                <div style={{ background: '#F8FAFC', padding: '1rem', borderRadius: 12, display: 'inline-block', border: '1px solid #E2E8F0' }}>
                   <img 
                     src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(`MISSING PERSON\nName: ${showQrModal.name}\nAge: ${showQrModal.age}\nGender: ${showQrModal.gender}\nAadhar: 9876 5432 ${showQrModal.id.slice(0,4).replace(/\D/g, '0').padEnd(4, '0')}\nAddress: 12, Pandurang Niwas, Wari Route\nBlood Group: ${showQrModal.blood_group || 'Unknown'}\nGuardian Contact: ${showQrModal.emergency_contact || 'N/A'}\nID: ${showQrModal.qr_code}`)}`} 
                     alt="Enlarged QR ID" 
                     style={{ width: 200, height: 200, display: 'block' }} 
                   />
-                </div>
-                
-                <div style={{ textAlign: 'left', background: '#F1F5F9', padding: '1rem', borderRadius: 8, fontSize: '0.8rem', color: '#334155' }}>
-                  <div style={{ marginBottom: '0.25rem' }}><strong>Name:</strong> {showQrModal.name}</div>
-                  <div style={{ marginBottom: '0.25rem' }}><strong>Aadhar:</strong> 9876 5432 {showQrModal.id.slice(0,4).replace(/\D/g, '0').padEnd(4, '0')}</div>
-                  <div style={{ marginBottom: '0.25rem' }}><strong>Guardian:</strong> {showQrModal.emergency_contact}</div>
-                  <div><span className={`badge ${showQrModal.status === 'MISSING' ? 'badge-red' : 'badge-green'}`}>{showQrModal.status}</span></div>
                 </div>
               </div>
             </div>
